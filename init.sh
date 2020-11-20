@@ -26,6 +26,9 @@ mkdir -p $SUBVOLUME_DIR
 
 # 5. Mount btrfs on local dir
 sudo mount $LOOP $DIR
+sudo chmod -R 777 $DIR
+echo "main volume" > $DIR/main_volume.txt
+find $DIR
 
 # 6. Assign a label
 sudo btrfs filesystem label $DIR $LABEL
@@ -34,10 +37,13 @@ sudo btrfs filesystem label $DIR
 
 # 7. Create Subvolume test
 sudo btrfs subvolume create $DIR/$SUBVOLUME
-sudo mount  $LOOP $SUBVOLUME_DIR -o subvol=$SUBVOLUME
+sudo chmod -R 777 $DIR/$SUBVOLUME
+sudo echo "subvolume" > $DIR/$SUBVOLUME/subvolume.txt
+sudo umount $DIR
+sudo mount $LOOP $SUBVOLUME_DIR -o subvol=$SUBVOLUME
+find $SUBVOLUME_DIR
 sudo df -h
 
 # 99. Unmount and remove connection file / loop device
 sudo umount $SUBVOLUME_DIR
-sudo umount $DIR
 sudo losetup -d $LOOP
